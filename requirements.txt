@@ -1,0 +1,11 @@
+
+Django==6.1.2
+gunicorn
+python-dotenv
+whitenoise
+Pillow
+numpy
+opencv-python-headless
+scikit-image
+easyocr
+matplotlib
