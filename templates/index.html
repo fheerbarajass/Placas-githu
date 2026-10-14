@@ -1,0 +1,350 @@
+
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#101310">
+  <title>PlateVision — Automotive Intelligence</title>
+
+  <style>
+    :root{--bg:#101310;--panel:#191d19;--panel2:#202520;--line:#343a34;--ink:#f4f3ed;--muted:#a1a79e;--red:#d62828;--red2:#a9181e;--gold:#d9b77a;--green:#a3c28b}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,"Segoe UI",Arial,sans-serif}
+    a{color:inherit}
+    .wrap{width:min(1180px,92vw);margin:auto}
+    .topbar{height:76px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ffffff18}
+    .brand{display:flex;align-items:center;gap:12px;letter-spacing:.18em;font-size:12px;font-weight:800}
+    .brand-mark{width:34px;height:34px;border:1px solid var(--red);display:grid;place-items:center;color:var(--red);font-size:18px;transform:skew(-8deg)}
+    .nav{font-size:11px;color:var(--muted);letter-spacing:.16em;text-transform:uppercase}
+    .live{color:var(--green);font-size:11px;letter-spacing:.12em}
+    .live:before{content:"";display:inline-block;width:7px;height:7px;background:var(--green);border-radius:50%;margin-right:9px;box-shadow:0 0 12px var(--green)}
+    .hero{min-height:530px;padding:74px 0 64px;position:relative;overflow:hidden;background:radial-gradient(ellipse at 78% 45%,#4c514933 0,transparent 38%),linear-gradient(115deg,#141814 0%,#101310 59%,#171b17 100%);border-bottom:1px solid var(--line)}
+    .hero:after{content:"";position:absolute;right:-7%;top:12%;width:58%;height:70%;border:1px solid #ffffff0c;transform:skew(-23deg);pointer-events:none}
+    .hero-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;position:relative;z-index:1}
+    .eyebrow{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);font-weight:700}
+    .hero h1{font-size:clamp(52px,8vw,102px);line-height:.9;letter-spacing:-.075em;margin:24px 0 22px;font-weight:850}
+    .hero h1 span{display:block;color:transparent;-webkit-text-stroke:1px #f4f3ed8c}
+    .hero p{max-width:450px;color:#b9beb7;font-size:16px;line-height:1.7;margin:0}
+    .hero-art{height:335px;position:relative;display:flex;align-items:center;justify-content:center}
+    .hero-art:before{content:"";position:absolute;width:82%;height:55%;border:1px solid #ffffff24;border-radius:50%;transform:perspective(300px) rotateX(62deg);box-shadow:0 0 70px #d6282810}
+    .car-line{position:relative;width:100%;height:210px;filter:drop-shadow(0 24px 20px #0009)}
+    .car-line svg{width:100%;height:100%;overflow:visible}
+    .hero-number{position:absolute;right:8px;top:5px;color:#ffffff0a;font-size:190px;font-weight:900;letter-spacing:-.1em;line-height:1;z-index:-1}
+    .hero-caption{position:absolute;bottom:8px;left:10%;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#92998f}
+    .section{padding:58px 0}
+    .section-head{display:flex;align-items:end;justify-content:space-between;gap:24px;margin-bottom:26px}
+    .section-head h2{font-size:27px;letter-spacing:-.04em;margin:9px 0 0}
+    .section-head p{color:var(--muted);font-size:13px;margin:0;max-width:410px;line-height:1.6}
+    .card{background:linear-gradient(145deg,#1a1f1a,#151815);border:1px solid var(--line);border-radius:4px;padding:28px}
+    .upload-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:24px}
+    .drop{min-height:225px;border:1px dashed #525a51;background:#111511;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:28px;transition:.2s}
+    .drop.drag{border-color:var(--red);background:#211515}
+    .upload-icon{font-size:30px;color:var(--red);margin-bottom:13px}
+    .drop h3{margin:0 0 8px;font-size:17px}
+    .drop p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}
+    .file{margin:20px 0 12px;max-width:100%;font-size:12px;color:var(--muted)}
+    input[type=file]::file-selector-button{border:1px solid #50564e;background:#232923;color:var(--ink);padding:10px 14px;margin-right:12px;cursor:pointer}
+    .button{border:0;background:var(--red);color:white;padding:14px 22px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:11px;cursor:pointer;transition:.2s}
+    .button:hover{background:#ef3838;transform:translateY(-1px)}
+    .button:disabled{opacity:.6;cursor:wait}
+    .preview-box{min-height:225px;background:#101310;border:1px solid var(--line);display:grid;place-items:center;overflow:hidden}
+    .preview-box img{width:100%;height:100%;max-height:260px;object-fit:contain}
+    .preview-empty{font-size:11px;letter-spacing:.16em;color:#697067;text-transform:uppercase}
+    .error{margin:24px auto;padding:16px 20px;background:#321819;border:1px solid #8b2d30;color:#ffdcdc;border-radius:4px}
+    .error p{margin:5px 0 0}
+    .results{padding-top:20px}
+    .plate-card{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:center;background:linear-gradient(110deg,#20251f,#171b17);border:1px solid #3c443b;padding:32px 38px;position:relative;overflow:hidden}
+    .plate-card:after{content:"PV";position:absolute;right:25%;top:-55px;font-weight:900;font-size:200px;color:#ffffff06;pointer-events:none}
+    .plate-label{font-size:10px;letter-spacing:.22em;color:var(--gold);text-transform:uppercase}
+    .plate-card h2{margin:12px 0 0;font-size:clamp(36px,7vw,72px);font-family:Consolas,"Courier New",monospace;letter-spacing:.09em;position:relative;z-index:1;overflow-wrap:anywhere}
+    .confidence{text-align:right;position:relative;z-index:1}
+    .confidence strong{display:block;font-size:30px}
+    .confidence span{font-size:10px;color:var(--muted);letter-spacing:.15em;text-transform:uppercase}
+    .metrics{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+    .metric{background:var(--panel);border:1px solid var(--line);padding:19px 20px}
+    .metric span{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:.15em;font-size:9px}
+    .metric strong{display:block;margin-top:10px;font-size:24px}
+    .notice{margin-top:14px;color:#aeb4ab;font-size:12px;line-height:1.6}
+    .gallery{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+    .figure{margin:0;background:var(--panel);border:1px solid var(--line);padding:10px}
+    .figure img{display:block;width:100%;height:260px;object-fit:contain;background:#0c0e0c}
+    .figure figcaption{padding:11px 4px 2px;color:#c3c8c0;font-size:11px;letter-spacing:.1em;text-transform:uppercase}
+    .figure-wide{grid-column:1/-1}
+    .figure-wide img{height:390px}
+    .table-wrap{overflow:auto;border:1px solid var(--line)}
+    table{width:100%;border-collapse:collapse;font-size:13px}
+    th,td{text-align:left;padding:13px 15px;border-bottom:1px solid var(--line)}
+    th{color:var(--gold);text-transform:uppercase;font-size:10px;letter-spacing:.13em;background:#202520}
+    td:last-child{font-family:Consolas,monospace;color:#e4e8e0}
+    .empty{padding:18px;color:var(--muted);background:#171b17;border:1px solid var(--line);line-height:1.6}
+    .footer{border-top:1px solid var(--line);padding:25px 0;color:#747c72;font-size:10px;letter-spacing:.12em;text-transform:uppercase}
+    .footer .wrap{display:flex;justify-content:space-between;gap:16px}
+    @media(max-width:760px){
+      .nav{display:none}
+      .hero{padding:55px 0 30px}
+      .hero-grid,.upload-grid{grid-template-columns:1fr}
+      .hero-art{height:230px}
+      .car-line{height:150px}
+      .hero-number{font-size:130px}
+      .section{padding:42px 0}
+      .section-head{display:block}
+      .section-head p{margin-top:12px}
+      .card{padding:16px}
+      .plate-card{grid-template-columns:1fr;padding:24px}
+      .confidence{text-align:left}
+      .metrics{grid-template-columns:1fr}
+      .gallery{grid-template-columns:1fr}
+      .figure-wide{grid-column:auto}
+      .figure-wide img,.figure img{height:230px}
+      .footer .wrap{display:block;line-height:2}
+    }
+  </style>
+</head>
+
+<body>
+  <header class="wrap topbar">
+    <div class="brand">
+      <span class="brand-mark">P</span>
+      <span>PLATEVISION<br>
+        <small style="font-size:8px;color:#92998f;letter-spacing:.24em">
+          AUTOMOTIVE INTELLIGENCE
+        </small>
+      </span>
+    </div>
+    <div class="nav">Computer vision · Vehicle analytics</div>
+    <div class="live">Sistema listo</div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap hero-grid">
+        <div>
+          <div class="eyebrow">Precisión en cada detalle</div>
+          <h1>La carretera<br><span>deja huella.</span></h1>
+          <p>
+            Analiza una fotografía y convierte cada matrícula en información legible.
+            Detección visual, lectura OCR y métricas en un solo panel.
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-number">01</div>
+          <div class="car-line">
+            <svg viewBox="0 0 760 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M69 202L99 171L191 150L263 99C283 84 304 76 334 72L465 56C502 52 537 65 567 91L625 143L693 161L724 190L716 221L680 232H89L54 220L69 202Z" fill="#222923" stroke="#A6B09F" stroke-width="3"/>
+              <path d="M281 99L337 82L465 68C493 65 520 75 545 96L590 142H235L281 99Z" fill="#141a17" stroke="#6E796D" stroke-width="2"/>
+              <path d="M353 83L345 141M475 69L494 141" stroke="#5A655A" stroke-width="2"/>
+              <path d="M73 190L149 180M640 168L704 182" stroke="#D62828" stroke-width="5"/>
+              <path d="M86 214H690" stroke="#050705" stroke-width="6"/>
+              <circle cx="197" cy="222" r="43" fill="#0B0D0B" stroke="#70786E" stroke-width="7"/>
+              <circle cx="197" cy="222" r="22" fill="#303731" stroke="#9DA599" stroke-width="3"/>
+              <circle cx="602" cy="222" r="43" fill="#0B0D0B" stroke="#70786E" stroke-width="7"/>
+              <circle cx="602" cy="222" r="22" fill="#303731" stroke="#9DA599" stroke-width="3"/>
+              <path d="M100 169L170 155M665 165L703 176" stroke="#D8DCCF" stroke-width="4" stroke-linecap="round"/>
+              <path d="M261 147H599" stroke="#A8B19F" stroke-opacity=".3"/>
+            </svg>
+          </div>
+          <div class="hero-caption">Visión artificial · Lectura de matrículas</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="wrap section">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">01 / Nueva inspección</div>
+          <h2>Analiza tu vehículo</h2>
+        </div>
+        <p>
+          Sube una foto nítida con la matrícula visible. PlateVision detectará
+          regiones candidatas y procesará el texto.
+        </p>
+      </div>
+
+      <div class="card upload-grid">
+        <form method="POST" enctype="multipart/form-data" id="formulario">
+          {% csrf_token %}
+          <div class="drop" id="dropzone">
+            <div class="upload-icon">⌁</div>
+            <h3>Arrastra la fotografía aquí</h3>
+            <p>o selecciónala desde tu dispositivo<br>JPG, JPEG o PNG · Máximo 10 MB</p>
+            <input class="file" type="file" name="imagen" id="imagen"
+                   accept=".jpg,.jpeg,.png,image/jpeg,image/png" required>
+            <button class="button" type="submit" id="botonAnalizar">Iniciar análisis</button>
+          </div>
+        </form>
+
+        <div class="preview-box" id="previewBox">
+          <div class="preview-empty" id="previewEmpty">Vista previa de imagen</div>
+          <img id="preview" alt="Vista previa" hidden>
+        </div>
+      </div>
+
+      {% if error %}
+        <div class="error">
+          <strong>No se completó el análisis.</strong>
+          <p>{{ error }}</p>
+        </div>
+      {% endif %}
+    </section>
+
+    {% if resultado %}
+    <section class="wrap section results" id="resultados">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">02 / Informe de lectura</div>
+          <h2>Resultados del análisis</h2>
+        </div>
+        <p>Archivo procesado: <strong>{{ resultado.nombre }}</strong></p>
+      </div>
+
+      <div class="plate-card">
+        <div>
+          <div class="plate-label">Matrícula detectada · OCR</div>
+          <h2>{{ resultado.texto_placa }}</h2>
+        </div>
+        <div class="confidence">
+          <strong>{{ resultado.confianza_porcentaje|floatformat:1 }}%</strong>
+          <span>Confianza OCR</span>
+        </div>
+      </div>
+
+      <div class="metrics">
+        <div class="metric">
+          <span>Regiones candidatas</span>
+          <strong>{{ resultado.cantidad }}</strong>
+        </div>
+        <div class="metric">
+          <span>Proceso</span>
+          <strong>
+            {% if resultado.cantidad %}Completado{% else %}Sin detección{% endif %}
+          </strong>
+        </div>
+        <div class="metric">
+          <span>Estado de lectura</span>
+          <strong>
+            {% if resultado.texto_placa == "No reconocida" or resultado.texto_placa == "No se encontro una placa" %}
+              Revisar
+            {% else %}
+              Disponible
+            {% endif %}
+          </strong>
+        </div>
+      </div>
+
+      <p class="notice">
+        El OCR puede confundir caracteres parecidos. Verifica la matrícula con
+        la fotografía original; la confianza corresponde a la lectura de texto.
+      </p>
+
+      <div class="section-head" style="margin-top:48px">
+        <div>
+          <div class="eyebrow">03 / Inspección visual</div>
+          <h2>Imágenes del proceso</h2>
+        </div>
+        <p>Comparación entre la captura original, el recorte y las etapas de procesamiento.</p>
+      </div>
+
+      <div class="gallery">
+        {% for imagen in resultado.galeria %}
+          <figure class="figure {% if imagen.clave == 'marcada' %}figure-wide{% endif %}">
+            <img src="{% static imagen.ruta %}"
+                 alt="{{ imagen.etiqueta }}" loading="lazy">
+            <figcaption>{{ imagen.etiqueta }}</figcaption>
+          </figure>
+        {% empty %}
+          <div class="empty">No hay imágenes de procesamiento disponibles.</div>
+        {% endfor %}
+      </div>
+
+      <div class="section-head" style="margin-top:48px">
+        <div>
+          <div class="eyebrow">04 / Datos de imagen</div>
+          <h2>Descriptores matemáticos</h2>
+        </div>
+        <p>Características calculadas sobre la región seleccionada por el detector.</p>
+      </div>
+
+      {% if resultado.descriptores %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Descriptor</th>
+              <th>Valor calculado</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for nombre, valor in resultado.descriptores.items %}
+            <tr>
+              <td>{{ nombre }}</td>
+              <td>{{ valor|floatformat:6 }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <div class="empty">
+        No hay descriptores para esta imagen. Intenta con otra fotografía más clara.
+      </div>
+      {% endif %}
+    </section>
+    {% endif %}
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <span>PlateVision · Automotive Intelligence</span>
+      <span>Computer vision / OCR / Image analysis</span>
+    </div>
+  </footer>
+
+  <script>
+    const input = document.getElementById('imagen');
+    const preview = document.getElementById('preview');
+    const empty = document.getElementById('previewEmpty');
+    const form = document.getElementById('formulario');
+    const button = document.getElementById('botonAnalizar');
+    const drop = document.getElementById('dropzone');
+
+    input.addEventListener('change', () => {
+      const file = input.files?.[0];
+      if (!file) return;
+
+      preview.src = URL.createObjectURL(file);
+      preview.hidden = false;
+      empty.hidden = true;
+    });
+
+    ['dragenter', 'dragover'].forEach(ev => {
+      drop.addEventListener(ev, e => {
+        e.preventDefault();
+        drop.classList.add('drag');
+      });
+    });
+
+    ['dragleave', 'drop'].forEach(ev => {
+      drop.addEventListener(ev, e => {
+        e.preventDefault();
+        drop.classList.remove('drag');
+      });
+    });
+
+    drop.addEventListener('drop', e => {
+      if (e.dataTransfer.files.length) {
+        input.files = e.dataTransfer.files;
+        input.dispatchEvent(new Event('change'));
+      }
+    });
+
+    form.addEventListener('submit', () => {
+      button.disabled = true;
+      button.textContent = 'Analizando…';
+    });
+  </script>
+</body>
+</html>
