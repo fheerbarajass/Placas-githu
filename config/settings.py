@@ -33,6 +33,7 @@ if not SECRET_KEY:
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DEBUG", "False") == "True"
+MAX_UPLOAD_SIZE = 10 * 1024 * 1024
 
 ALLOWED_HOSTS = [
     "localhost",
