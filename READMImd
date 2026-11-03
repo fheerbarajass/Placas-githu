@@ -37,3 +37,29 @@ tardar y tiene recursos limitados. Los archivos procesados se conservan solo mie
 Render puede borrar los archivos locales al reiniciar o suspender el servicio.
 
 LIGA PARA ABRIR LA PAGINA https://placas-githu.onrender.com/
+## Gestión de dependencias y licencias
+
+Las dependencias directas del proyecto se declaran en `requirements.txt`.
+Para que las instalaciones sean reproducibles, se registran las versiones
+utilizadas y se revisan periódicamente las vulnerabilidades y licencias de
+los paquetes directos y transitivos.
+
+Licencias identificadas en las dependencias principales:
+
+| Paquete | Uso | Licencia identificada |
+|---|---|---|
+| Django | Aplicación web y autenticación | BSD de 3 cláusulas |
+| EasyOCR | Reconocimiento de texto | Apache 2.0 |
+| OpenCV | Procesamiento de imágenes | Apache 2.0 |
+| scikit-image | Procesamiento de imágenes | BSD |
+| NumPy | Cálculos numéricos | Licencias múltiples; revisar avisos incluidos |
+| Pillow | Lectura de imágenes | MIT-CMU |
+| python-dotenv | Lectura de variables locales | BSD-3-Clause |
+| WhiteNoise | Archivos estáticos | MIT |
+| Gunicorn | Servidor web | MIT |
+| Matplotlib | Gráficas | Revisar la licencia y avisos incluidos en la distribución |
+
+La revisión anterior cubre los paquetes directos. También se deben revisar
+sus dependencias transitivas y conservar los avisos de licencia que incluyen
+las distribuciones. Las dependencias se actualizarán después de comprobar
+que el sistema siga funcionando.
